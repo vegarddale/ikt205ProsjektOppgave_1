@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "174263671695",
+    "project_id": "ikt205prosjektoppgave1",
+    "storage_bucket": "ikt205prosjektoppgave1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174263671695:android:686608aeb24c7b25f609fa",
+        "android_client_info": {
+          "package_name": "com.example.ikt205prosjektoppgave_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174263671695-fvfn7a7a9o8oh011ldqpvd81kpdhlh45.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVNms4rMieTTwHZwZVtRqN8w300OVXbNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174263671695-fvfn7a7a9o8oh011ldqpvd81kpdhlh45.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
