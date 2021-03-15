@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listOverviewFragment">
+
+    <fragment
+        android:id="@+id/listOverviewFragment"
+        android:name="com.example.ikt205prosjektoppgave_1.ListOverviewFragment"
+        android:label="fragment_list_overview"
+        tools:layout="@layout/fragment_list_overview" >
+        <action
+            android:id="@+id/action_listOverviewFragment_to_listDetailsFragment"
+            app:destination="@id/listDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listDetailsFragment"
+        android:name="com.example.ikt205prosjektoppgave_1.ListDetailsFragment"
+        android:label="fragment_list_details"
+        tools:layout="@layout/fragment_list_details" >
+    </fragment>
+</navigation>
