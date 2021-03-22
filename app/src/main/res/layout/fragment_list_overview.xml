@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ListOverviewFragment">
-
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,10 +14,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
-        <Button
-            android:id="@+id/test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="test"/>
-
-</FrameLayout>
+    <EditText
+        android:id="@+id/addTodoListName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="listName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/addTodoListBtn"/>
+    <Button
+        android:id="@+id/addTodoListBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

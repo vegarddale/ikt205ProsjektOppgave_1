@@ -1,32 +1,49 @@
 package com.example.ikt205prosjektoppgave_1
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.ikt205prosjektoppgave_1.adapters.ListOverviewAdapter
+import com.example.ikt205prosjektoppgave_1.adapters.ListOverviewItemAdapter
+import com.example.ikt205prosjektoppgave_1.data.TodoList
 import com.example.ikt205prosjektoppgave_1.databinding.FragmentListOverviewBinding
-import com.example.ikt205prosjektoppgave_1.viewmodels.ListViewModel
+import com.example.ikt205prosjektoppgave_1.viewmodels.TodoListViewModel
 import kotlinx.android.synthetic.main.fragment_list_overview.view.*
 
 
 class ListOverviewFragment : Fragment() {
 
-    private val listViewModel : ListViewModel by activityViewModels()
-    //private lateinit var adapter: ListOverviewAdapter
+    private val todoListViewModel : TodoListViewModel by activityViewModels()
+    private lateinit var adapter: ListOverviewItemAdapter
 
     private var _binding: FragmentListOverviewBinding? = null
     val binding get() = _binding!!
 
+    val filter = IntentFilter().apply {
+        addAction("DELETE_LIST")
+    }
+    val reciever = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val index = intent?.extras?.get("com.example.ikt205prosjektoppgave_1.LIST_INDEX") as Int
+            todoListViewModel.removeListByIndex(index)
+            adapter.deleteList(index)
+            goAsync()
+        }
+    }
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //adapter = ListOverviewAdapter(listViewModel.list.value!!)
+        adapter = ListOverviewItemAdapter()
+        requireActivity().registerReceiver(reciever, filter)
     }
 
     override fun onCreateView(
@@ -36,21 +53,20 @@ class ListOverviewFragment : Fragment() {
         _binding = FragmentListOverviewBinding.inflate(layoutInflater)
         val view = binding.root
 
-        view.test.setOnClickListener{
-            listViewModel.list.value?.forEach{
-                println(it)
-            }
-            navigateToListDetails(view)
-        }
+        binding.listRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        binding.listRecyclerView.adapter = adapter
 
-        //binding.listRecyclerView.layoutManager = LinearLayoutManager(this.context)
-        //binding.listRecyclerView.adapter = adapter
+        binding.addTodoListBtn.setOnClickListener{
+            // TODO: 3/21/2021 check empty input
+            val name = view.addTodoListName.text.toString()
+            val todoList = TodoList(name, mutableListOf())
+            todoListViewModel.updateList(todoList)
+            println("view model size $todoListViewModel.todoLists.size")
+            adapter.updateListOverview(todoList)
+        }
 
         return view
     }
 
-    private fun navigateToListDetails(view:FrameLayout){
-        val action = ListOverviewFragmentDirections.actionListOverviewFragmentToListDetailsFragment()
-        view.findNavController().navigate(action)
-    }
+
 }
