@@ -13,32 +13,24 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_details_items"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/addBookForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:backgroundTint="@color/purple_500"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
 
         <EditText
             android:id="@+id/itemName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="name"/>
+            android:hint="name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/addListItemBtn"/>
 
         <Button
             android:id="@+id/addListItemBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="add"/>
-    </LinearLayout>
-
-
+            android:text="add List Item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

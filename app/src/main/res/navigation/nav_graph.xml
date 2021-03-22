@@ -12,12 +12,18 @@
         tools:layout="@layout/fragment_list_overview" >
         <action
             android:id="@+id/action_listOverviewFragment_to_listDetailsFragment"
-            app:destination="@id/listDetailsFragment" />
+            app:destination="@id/ListDetailsFragment">
+        </action>
     </fragment>
+
     <fragment
-        android:id="@+id/listDetailsFragment"
+        android:id="@+id/ListDetailsFragment"
         android:name="com.example.ikt205prosjektoppgave_1.ListDetailsFragment"
         android:label="fragment_list_details"
         tools:layout="@layout/fragment_list_details" >
+        <argument
+            android:name="ListDetailsPosition"
+            app:argType="integer" />
     </fragment>
+
 </navigation>
