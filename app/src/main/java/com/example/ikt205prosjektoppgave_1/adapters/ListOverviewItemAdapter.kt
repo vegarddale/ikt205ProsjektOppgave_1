@@ -4,35 +4,41 @@ import android.content.Context
 import android.content.Intent
 import android.text.Editable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ikt205prosjektoppgave_1.ListOverviewFragmentDirections
 import com.example.ikt205prosjektoppgave_1.data.TodoList
 import com.example.ikt205prosjektoppgave_1.databinding.ListOverviewItemBinding
+import com.example.ikt205prosjektoppgave_1.utilities.TAG
 
 class ListOverviewItemAdapter : RecyclerView.Adapter<ListOverviewItemAdapter.ViewHolder>() {
-    private val todoLists = mutableListOf<TodoList>()
+    private var todoLists = emptyList<TodoList>()
+
 
     class ViewHolder(val binding:ListOverviewItemBinding):RecyclerView.ViewHolder(binding.root){
-
         fun bind(list:TodoList, position: Int){
             binding.todoListName.text = list.name
-            binding.todoListName.setOnClickListener{
+            binding.todoListOverview.setOnClickListener{
                 navigateToListDetails(binding.root, position)
             }
             binding.deleteListBtn.setOnClickListener{
                 val intent = Intent().also {
                     it.action = "DELETE_LIST"
-                    it.putExtra("com.example.ikt205prosjektoppgave_1.LIST_INDEX", position)
+                    it.putExtra("$TAG.LIST_INDEX", position)
                 }
                 binding.root.context.sendBroadcast(intent)
             }
+            binding.todoListProgressBar.progress = list.progress
+
         }
 
-         fun navigateToListDetails(view: ConstraintLayout, position: Int){
+
+         fun navigateToListDetails(view: FrameLayout, position: Int){
             val action = ListOverviewFragmentDirections.actionListOverviewFragmentToListDetailsFragment(position)
             view.findNavController().navigate(action)
         }
@@ -45,18 +51,18 @@ class ListOverviewItemAdapter : RecyclerView.Adapter<ListOverviewItemAdapter.Vie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(todoLists[position], position)
-
     }
 
     override fun getItemCount(): Int = todoLists.size
 
-     fun updateListOverview(list:TodoList){
-        todoLists.add(list)
+
+    fun updateListOverview(list:List<TodoList>){
+        todoLists = list
         notifyDataSetChanged()
     }
 
-    fun deleteList(index: Int){
-        todoLists.removeAt(index)
-        notifyDataSetChanged()
+    fun updateProgressBar(progress:Int){
+       println("listoverview adapter $progress")
     }
+
 }

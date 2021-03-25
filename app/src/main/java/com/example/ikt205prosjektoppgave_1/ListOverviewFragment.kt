@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ikt205prosjektoppgave_1.adapters.ListOverviewItemAdapter
 import com.example.ikt205prosjektoppgave_1.data.TodoList
 import com.example.ikt205prosjektoppgave_1.databinding.FragmentListOverviewBinding
+import com.example.ikt205prosjektoppgave_1.utilities.TAG
 import com.example.ikt205prosjektoppgave_1.viewmodels.TodoListViewModel
 import kotlinx.android.synthetic.main.fragment_list_overview.view.*
+import java.util.*
 
 
 class ListOverviewFragment : Fragment() {
@@ -31,18 +33,21 @@ class ListOverviewFragment : Fragment() {
     }
     val reciever = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val index = intent?.extras?.get("com.example.ikt205prosjektoppgave_1.LIST_INDEX") as Int
+            val index = intent?.extras?.get("$TAG.LIST_INDEX") as Int
             todoListViewModel.removeListByIndex(index)
-            adapter.deleteList(index)
+            adapter.updateListOverview(todoListViewModel.todoLists)
             goAsync()
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = ListOverviewItemAdapter()
+
+        todoListViewModel.progress.observe(requireActivity(),  {
+            adapter.updateProgressBar(it)
+        })
+
         requireActivity().registerReceiver(reciever, filter)
     }
 
@@ -61,8 +66,7 @@ class ListOverviewFragment : Fragment() {
             val name = view.addTodoListName.text.toString()
             val todoList = TodoList(name, mutableListOf())
             todoListViewModel.updateList(todoList)
-            println("view model size $todoListViewModel.todoLists.size")
-            adapter.updateListOverview(todoList)
+            adapter.updateListOverview(todoListViewModel.todoLists)
         }
 
         return view
