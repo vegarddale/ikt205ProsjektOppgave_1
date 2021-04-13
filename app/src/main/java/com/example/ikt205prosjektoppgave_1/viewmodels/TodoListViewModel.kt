@@ -2,21 +2,28 @@ package com.example.ikt205prosjektoppgave_1.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ikt205prosjektoppgave_1.data.TodoList
 import com.example.ikt205prosjektoppgave_1.data.TodoListItem
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.emptyFlow
 
 class TodoListViewModel: ViewModel() {
-
+    override fun toString(): String {
+        return super.toString()
+    }
 
     private val listOverview = mutableListOf<TodoList>()
 
     val progress = MutableLiveData<Int>()
     var test = MutableLiveData<MutableList<TodoList>>()
+
     val todoLists: MutableList<TodoList> get(){
+        test.value = listOverview
         return listOverview
     }
 
-    // kan vi wrappe todoLists i en livedata og bare observe den?
     init {
         test = MutableLiveData()
         progress.value = 0
@@ -39,9 +46,19 @@ class TodoListViewModel: ViewModel() {
 
     fun updateProgressBar(index: Int, progress:Int){
         listOverview[index].progress += progress
-        println(listOverview[index].progress)
     }
     fun updateTodoListCheckBox(listIndex: Int, itemIndex: Int){
         listOverview[listIndex].items[itemIndex].isCheckedOff = !listOverview[listIndex].items[itemIndex].isCheckedOff
     }
+
+    fun load(todoLists :List<TodoList>){
+         listOverview.clear()
+        listOverview.addAll(todoLists)
+    }
+
+    fun clear(){
+        listOverview.clear()
+    }
+
+
 }

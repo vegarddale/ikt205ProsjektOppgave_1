@@ -15,14 +15,11 @@ class ListDetailsAdapter : RecyclerView.Adapter<ListDetailsAdapter.ViewHolder>()
     class ViewHolder(private val binding: ListDetailsItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(todoListItem: TodoListItem, position: Int, itemCount: Int) {
-
             binding.todoListItemCheckBox.text = todoListItem.name
             binding.todoListItemCheckBox.isChecked = todoListItem.isCheckedOff
 
             binding.todoListItemCheckBox.setOnClickListener {
                 var progress: Float = 1 / itemCount.toFloat()
-
-
                 if(todoListItem.isCheckedOff){
                     progress = -progress
                 }
@@ -31,7 +28,6 @@ class ListDetailsAdapter : RecyclerView.Adapter<ListDetailsAdapter.ViewHolder>()
                     it.action = "UPDATE_PROGRESS"
                     it.putExtra("$TAG.LIST_PROGRESS", progress)
                     it.putExtra("$TAG.LIST_ITEM_INDEX", position)
-
                 }
                 binding.root.context.sendBroadcast(intent)
             }
@@ -61,6 +57,4 @@ class ListDetailsAdapter : RecyclerView.Adapter<ListDetailsAdapter.ViewHolder>()
         todoListItems = list
         notifyDataSetChanged()
     }
-
-
 }

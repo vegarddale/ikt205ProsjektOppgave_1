@@ -4,21 +4,28 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.*
 import com.example.ikt205prosjektoppgave_1.adapters.ListDetailsAdapter
+import com.example.ikt205prosjektoppgave_1.data.TodoList
 import com.example.ikt205prosjektoppgave_1.data.TodoListItem
 import com.example.ikt205prosjektoppgave_1.databinding.FragmentListDetailsBinding
 import com.example.ikt205prosjektoppgave_1.utilities.TAG
 import com.example.ikt205prosjektoppgave_1.viewmodels.TodoListViewModel
+import com.example.ikt205prosjektoppgave_1.workers.FirebaseWorker
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import java.io.*
 
 
 class ListDetailsFragment : Fragment() {
@@ -42,7 +49,7 @@ class ListDetailsFragment : Fragment() {
                     todoListViewModel.removeItemByIndex(listIndex, itemIndex)
                     adapter.updateList(todoListViewModel.getListDetailsByIndex(listIndex))
                 }
-                "UPDATE_PROGRESS" -> {
+                "UPDATE_PROGRESS" -> { // TODO: 4/8/2021 endre action navn 
                     val progress = intent.extras?.get("$TAG.LIST_PROGRESS") as Float
                     val progressPercent = progress * 100
                     todoListViewModel.progress.value = progressPercent.toInt()
@@ -50,9 +57,7 @@ class ListDetailsFragment : Fragment() {
 
                     val listItemIndex = intent.extras?.get("$TAG.LIST_ITEM_INDEX") as Int
                     todoListViewModel.updateTodoListCheckBox(args.ListDetailsPosition, listItemIndex)
-
                 }
-
             }
         }
     }
@@ -66,6 +71,7 @@ class ListDetailsFragment : Fragment() {
         requireActivity().registerReceiver(reciever, filter)
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,14 +83,8 @@ class ListDetailsFragment : Fragment() {
 
         val list = todoListViewModel.getListDetailsByIndex(args.ListDetailsPosition)
         adapter.updateList(list)
+
         return view
-    }
-
-
-
-    override fun onDestroyView() {
-        requireActivity().unregisterReceiver(reciever)
-        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,6 +97,13 @@ class ListDetailsFragment : Fragment() {
             todoListViewModel.updateTodoListItems(items, args.ListDetailsPosition)
             val list = todoListViewModel.getListDetailsByIndex(args.ListDetailsPosition)
             adapter.updateList(list)
+
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().unregisterReceiver(reciever)
+
     }
 }
