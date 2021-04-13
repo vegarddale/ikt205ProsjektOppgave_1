@@ -34,7 +34,6 @@ class ListOverviewItemAdapter : RecyclerView.Adapter<ListOverviewItemAdapter.Vie
                 binding.root.context.sendBroadcast(intent)
             }
             binding.todoListProgressBar.progress = list.progress
-
         }
 
 
@@ -59,9 +58,11 @@ class ListOverviewItemAdapter : RecyclerView.Adapter<ListOverviewItemAdapter.Vie
     fun updateListOverview(list:List<TodoList>){
         todoLists = list
         notifyDataSetChanged()
+
     }
 
-    fun updateProgressBar(progress:Int){
+
+    fun updateProgressBar(progress:Int){ // TODO: 4/13/2021 brukes ikke 
        println("listoverview adapter $progress")
     }
 

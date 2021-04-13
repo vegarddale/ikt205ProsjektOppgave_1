@@ -3,7 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/listOverviewFragment">
+    app:startDestination="@id/signInFragment">
+
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.ikt205prosjektoppgave_1.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signInFragment_to_listOverviewFragment"
+            app:destination="@id/listOverviewFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/listOverviewFragment"
@@ -14,6 +24,14 @@
             android:id="@+id/action_listOverviewFragment_to_listDetailsFragment"
             app:destination="@id/ListDetailsFragment">
         </action>
+        <argument
+            android:name="freshLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="isAnonymous"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
     <fragment
