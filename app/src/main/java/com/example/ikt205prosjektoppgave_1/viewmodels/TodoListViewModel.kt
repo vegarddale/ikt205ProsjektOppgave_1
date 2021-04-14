@@ -1,33 +1,15 @@
 package com.example.ikt205prosjektoppgave_1.viewmodels
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.ikt205prosjektoppgave_1.data.TodoList
 import com.example.ikt205prosjektoppgave_1.data.TodoListItem
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.emptyFlow
+
 
 class TodoListViewModel: ViewModel() {
-    override fun toString(): String {
-        return super.toString()
-    }
 
     private val listOverview = mutableListOf<TodoList>()
 
-    val progress = MutableLiveData<Int>()
-    var test = MutableLiveData<MutableList<TodoList>>()
-
-    val todoLists: MutableList<TodoList> get(){
-        test.value = listOverview
-        return listOverview
-    }
-
-    init {
-        test = MutableLiveData()
-        progress.value = 0
-    }
+    val todoLists: MutableList<TodoList> get() = listOverview
 
     fun updateList(todoList: TodoList) = listOverview.add(todoList)
 

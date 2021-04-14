@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -37,7 +38,7 @@ class ListDetailsFragment : Fragment() {
 
     val filter = IntentFilter().apply {
         addAction("DELETE_ITEM")
-        addAction("UPDATE_PROGRESS")
+        addAction("CHECKBOX_CLICKED")
     }
 
     val reciever = object : BroadcastReceiver() {
@@ -49,10 +50,9 @@ class ListDetailsFragment : Fragment() {
                     todoListViewModel.removeItemByIndex(listIndex, itemIndex)
                     adapter.updateList(todoListViewModel.getListDetailsByIndex(listIndex))
                 }
-                "UPDATE_PROGRESS" -> { // TODO: 4/8/2021 endre action navn 
+                "CHECKBOX_CLICKED" -> {
                     val progress = intent.extras?.get("$TAG.LIST_PROGRESS") as Float
                     val progressPercent = progress * 100
-                    todoListViewModel.progress.value = progressPercent.toInt()
                     todoListViewModel.updateProgressBar(args.ListDetailsPosition, progressPercent.toInt())
 
                     val listItemIndex = intent.extras?.get("$TAG.LIST_ITEM_INDEX") as Int
@@ -90,14 +90,16 @@ class ListDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.addListItemBtn.setOnClickListener{
-
-            // TODO: 3/21/2021 check for empty input
             val itemName = binding.itemName.text.toString()
-            val items = listOf(TodoListItem(itemName))
-            todoListViewModel.updateTodoListItems(items, args.ListDetailsPosition)
-            val list = todoListViewModel.getListDetailsByIndex(args.ListDetailsPosition)
-            adapter.updateList(list)
-
+            if(itemName != ""){
+                val items = listOf(TodoListItem(itemName))
+                todoListViewModel.updateTodoListItems(items, args.ListDetailsPosition)
+                val list = todoListViewModel.getListDetailsByIndex(args.ListDetailsPosition)
+                adapter.updateList(list)
+            }
+            else{
+                Toast.makeText(requireActivity(), "Item name cannot be empty", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

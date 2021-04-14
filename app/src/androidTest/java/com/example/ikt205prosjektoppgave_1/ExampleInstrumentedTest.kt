@@ -21,4 +21,13 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.ikt205prosjektoppgave_1", appContext.packageName)
     }
+
+    @Test
+    fun testTodoList(){
+    }
+
+    @Test
+    fun testTodoListItem(){
+
+    }
 }

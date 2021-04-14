@@ -1,18 +1,17 @@
 package com.example.ikt205prosjektoppgave_1
-
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.util.AttributeSet
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +25,6 @@ import com.example.ikt205prosjektoppgave_1.workers.FirebaseWorker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_list_overview.view.*
-import kotlinx.coroutines.awaitAll
 import java.io.*
 
 
@@ -52,7 +50,7 @@ class ListOverviewFragment : Fragment() {
                     todoListViewModel.removeListByIndex(index)
                     adapter.updateListOverview(todoListViewModel.todoLists)}
                 "DOWNLOAD_COMPLETE" -> {
-                    val lists = getListsFromFile()
+                    val lists = getListsFromFile("TodoLists")
                     if (lists != null){
                         val todoLists = formatLists(lists)
                         todoListViewModel.load(todoLists)
@@ -68,11 +66,17 @@ class ListOverviewFragment : Fragment() {
         super.onCreate(savedInstanceState)
         adapter = ListOverviewItemAdapter()
 
-        todoListViewModel.progress.observe(requireActivity(),  {
-            adapter.updateProgressBar(it)
-        })
         if(!args.freshLogin && !args.isAnonymous){
-            val lists = getListsFromFile()
+            val lists = getListsFromFile("TodoLists")
+            if(lists != null){
+                val todoLists = formatLists(lists)
+                todoListViewModel.load(todoLists)
+
+                adapter.updateListOverview(todoListViewModel.todoLists)
+            }
+        }
+        if(args.isAnonymous){
+            val lists = getListsFromFile("Anonymous")
             if(lists != null){
                 val todoLists = formatLists(lists)
                 todoListViewModel.load(todoLists)
@@ -94,11 +98,15 @@ class ListOverviewFragment : Fragment() {
         binding.listRecyclerView.adapter = adapter
 
         binding.addTodoListBtn.setOnClickListener{
-            // TODO: 3/21/2021 check empty input
             val name = view.addTodoListName.text.toString()
-            val todoList = TodoList(name, mutableListOf())
-            todoListViewModel.updateList(todoList)
-            adapter.updateListOverview(todoListViewModel.todoLists)
+            if(name != ""){
+                val todoList = TodoList(name, mutableListOf())
+                todoListViewModel.updateList(todoList)
+                adapter.updateListOverview(todoListViewModel.todoLists)
+            }
+            else{
+                Toast.makeText(requireActivity(), "List name cannot be empty", Toast.LENGTH_SHORT).show()
+            }
         }
         return view
     }
@@ -111,19 +119,27 @@ class ListOverviewFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        val fileUri = saveFile("TodoLists", todoListViewModel.todoLists)
-        uploadToFirebase(fileUri, Firebase.auth.currentUser!!.email) // TODO: 4/11/2021 fix
-
+        when(args.isAnonymous){
+            true -> {
+                val fileUri = saveFile("Anonymous", todoListViewModel.todoLists)
+                uploadToFirebase(fileUri, "Anonymous")
+            }
+            else -> {
+                val fileUri = saveFile("TodoLists", todoListViewModel.todoLists)
+                uploadToFirebase(fileUri, Firebase.auth.currentUser!!.email)
+            }
+        }
     }
 
-    private fun getListsFromFile():List<*>?{
-        println("getting lists from file")
+    private fun getListsFromFile(filename:String):List<*>?{
 
         val filePath = requireActivity().getExternalFilesDir(null)
-        val file = File(filePath, "TodoLists")
-        if(file.canRead()){ // TODO: 4/12/2021 ha heller try catch block 
+        val file = File(filePath, filename)
+        try{
             val fis = FileInputStream(file)
             return ObjectInputStream(fis).readObject() as List<*>
+        }catch (e:IOException){
+            Log.e(TAG, e.toString())
         }
         return null
     }

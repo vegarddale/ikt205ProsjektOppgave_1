@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
@@ -24,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -50,7 +52,7 @@ class SignInFragment : Fragment() {
                         println(it.resultCode)
                         firebaseAuthWithGoogle(account.idToken)
                     } catch (e: ApiException){
-                        Log.w(TAG, "blabla", e)
+                        Log.w(TAG, "failed to login", e)
                     }
                 }
                 else -> {
@@ -83,14 +85,14 @@ class SignInFragment : Fragment() {
         binding.anonymousSignIn.setOnClickListener{
             signInAnonymously()
         }
+        binding.signOut.setOnClickListener{
+            val task = googleSignInClient.signOut()
+            task.addOnSuccessListener {
+                Toast.makeText(requireActivity(), "signing out ${auth.currentUser?.email}", Toast.LENGTH_SHORT).show()
+                Firebase.auth.signOut()
+            }
+        }
         return view
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        googleSignInClient.signOut()
-        Firebase.auth.signOut() // TODO: 4/1/2021 sign out another way? dont sign out when every time user leaves list overview
     }
 
     private fun firebaseAuthWithGoogle(idToken: String?) {
