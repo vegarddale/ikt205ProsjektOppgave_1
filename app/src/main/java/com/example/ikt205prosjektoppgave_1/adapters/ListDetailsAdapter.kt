@@ -25,7 +25,7 @@ class ListDetailsAdapter : RecyclerView.Adapter<ListDetailsAdapter.ViewHolder>()
                 }
 
                 val intent = Intent().also {
-                    it.action = "UPDATE_PROGRESS"
+                    it.action = "CHECKBOX_CLICKED"
                     it.putExtra("$TAG.LIST_PROGRESS", progress)
                     it.putExtra("$TAG.LIST_ITEM_INDEX", position)
                 }

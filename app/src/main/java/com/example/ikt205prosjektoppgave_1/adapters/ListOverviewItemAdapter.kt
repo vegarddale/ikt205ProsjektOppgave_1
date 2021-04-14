@@ -58,12 +58,5 @@ class ListOverviewItemAdapter : RecyclerView.Adapter<ListOverviewItemAdapter.Vie
     fun updateListOverview(list:List<TodoList>){
         todoLists = list
         notifyDataSetChanged()
-
     }
-
-
-    fun updateProgressBar(progress:Int){ // TODO: 4/13/2021 brukes ikke 
-       println("listoverview adapter $progress")
-    }
-
 }

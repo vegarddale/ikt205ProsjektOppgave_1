@@ -35,15 +35,12 @@ class FirebaseWorker(appcontext: Context, workerParams: WorkerParameters): Worke
         val email = this.inputData.getString("email")
         if(email != null){
             download(email)
-            return Result.success()
         }
-        return Result.success() // TODO: 4/5/2021 kun return success hvis det kommer inn noe data, hvis ikke return failure ellernoe
+        return Result.success()
     }
 
     
     private fun upload(file: Uri, userEmail: String){
-
-        println("uploading file to firebase")
 
         val storageRef = FirebaseStorage.getInstance().reference.child("$userEmail/${file.lastPathSegment}")
         val uploadTask = storageRef.putFile(file)
@@ -56,15 +53,12 @@ class FirebaseWorker(appcontext: Context, workerParams: WorkerParameters): Worke
 
 
     private fun download(email:String) {
-        // TODO: 4/5/2021 hvis brukeren ikke har noe lagret i firebase ikke kjøre denne eller returner null
-
-        println("getting data from firebase to file")
 
         val storageRef = FirebaseStorage.getInstance().reference.child("${email}/TodoLists")
         val filePath = this.applicationContext.getExternalFilesDir(null)
         val file = File("$filePath", "TodoLists")
 
-        val storageTask = storageRef.getFile(file.toUri())
+        storageRef.getFile(file.toUri())
                 .addOnSuccessListener {
                     Log.d(TAG, "downloaded file from firebase")
                     val intent = Intent().apply {
@@ -73,11 +67,5 @@ class FirebaseWorker(appcontext: Context, workerParams: WorkerParameters): Worke
                     applicationContext.sendBroadcast(intent)
                 }
                 .addOnFailureListener { Log.e(TAG, "failed to get file from firebase", it) }
-
-        Tasks.await(storageTask) // TODO: 4/13/2021 trenger ikke vente 
-
-        // TODO: 4/5/2021 det er worker tråden som fryses ved await fordi det er den som kaller funksjonen
-         // TODO: 4/5/2021 return if success
     }
-
 }

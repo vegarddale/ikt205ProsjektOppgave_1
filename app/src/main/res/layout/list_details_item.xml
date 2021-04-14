@@ -6,6 +6,7 @@
     app:cardCornerRadius="@dimen/cardview_default_elevation"
     android:backgroundTint="@color/material_on_surface_stroke">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
